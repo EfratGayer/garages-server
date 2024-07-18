@@ -42,7 +42,16 @@ class GarageService {
    */
   public async addGarages(garages: Garage[]): Promise<Garage[]> {
     try {
-      const newGarages = await this.garage.insertMany(garages);
+      const operations = garages.map((garage) => ({
+        updateOne: {
+          filter: { originalId: garage.originalId },
+          update: { $setOnInsert: garage },
+          upsert: true
+        }
+      }));
+      const result = await this.garage.bulkWrite(operations);
+      const insertedIds = Object.values(result?.upsertedIds).map((id) => id._id);
+      const newGarages = await this.garage.find({ _id: { $in: insertedIds } });
       return newGarages;
     } catch (error) {
       throw new Error(`Failed to add garages: ${error}`);
