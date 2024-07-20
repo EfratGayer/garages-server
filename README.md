@@ -2,6 +2,10 @@
 
 This project was generated with Node version 20.15.1.
 
+## Environment Variables
+
+Create `.env` file according to the `.env.example` file.
+
 ## Development server
 
 Run `npm run dev` for a dev server.
